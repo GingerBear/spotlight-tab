@@ -1,0 +1,20 @@
+{
+  "name": "spotlight-tab",
+  "version": "0.0.1",
+  "author": "Neil Ding",
+  "description": "spotlight like search for chrome tabs",
+  "permissions": ["tabs"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["spotlight-tab-content.js"],
+      "css": ["spotlight-tab-content.css"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "scripts": ["spotlight-tab-background.js"]
+  },
+  "manifest_version": 2
+}
