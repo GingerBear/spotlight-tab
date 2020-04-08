@@ -1,6 +1,6 @@
 {
   "name": "spotlight-tab",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Neil Ding",
   "description": "spotlight like search for chrome tabs",
   "permissions": ["tabs"],
