@@ -12,9 +12,16 @@ let state = {
 function main() {
   window.addEventListener('keydown', e => {
     let isMac = navigator.platform.indexOf('Mac') > -1;
-    let isCmdKeyPress = (isMac && e.metaKey) || (!isMac && e.altKey);
+    let isCmdKeyPressed = (isMac && e.metaKey) || (!isMac && e.altKey);
+    let isShiftKeyPressed = e.shiftKey;
 
-    if (isCmdKeyPress && e.key === '\\') {
+    let showSpotlightPressed =
+      isCmdKeyPressed && !isShiftKeyPressed && e.key === '\\';
+    let quickSwitchPressed =
+      isCmdKeyPressed && isShiftKeyPressed && e.key === '|';
+
+    // show spotlight
+    if (showSpotlightPressed) {
       if (!document.querySelector('#__spotlight-tab')) {
         initSpotlight();
       } else {
@@ -24,6 +31,13 @@ function main() {
           unhideSpotlight();
         }
       }
+    }
+
+    // quick switch
+    else if (quickSwitchPressed) {
+      chrome.runtime.sendMessage({
+        action: 'goto-last-tab'
+      });
     }
   });
 
