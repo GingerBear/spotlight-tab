@@ -1,8 +1,8 @@
-.__spotlight-tab * {
+#__spotlight-tab * {
   box-sizing: border-box;
 }
 
-.__spotlight-tab {
+#__spotlight-tab {
   position: fixed;
   box-sizing: border-box;
   top: 100px;
@@ -15,16 +15,16 @@
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-.__spotlight-tab.hidden {
+#__spotlight-tab.hidden {
   display: none;
 }
 
-.__spotlight-tab-inner {
+#__spotlight-tab .__spotlight-tab-inner {
   width: 100%;
   margin: 0 auto;
 }
 
-.__spotlight-tab-inner input {
+#__spotlight-tab .__spotlight-tab-inner input {
   width: 100%;
   padding: 8px;
   font-size: 14px;
@@ -32,13 +32,13 @@
   margin: 0;
 }
 
-.__spotlight-result-list {
+#__spotlight-tab .__spotlight-result-list {
   background: white;
   max-height: 500px;
   overflow-y: auto;
 }
 
-.__spotlight-result-item {
+#__spotlight-tab .__spotlight-result-item {
   background: white;
   padding: 8px;
   font-size: 14px;
@@ -49,22 +49,22 @@
   align-items: center;
 }
 
-.__spotlight-result-item-title {
+#__spotlight-tab .__spotlight-result-item-title {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   pointer-events: none;
 }
 
-.__spotlight-result-item:hover {
+#__spotlight-tab .__spotlight-result-item:hover {
   background: #eee;
 }
 
-.__spotlight-result-focused {
+#__spotlight-tab .__spotlight-result-focused {
   background: #eee;
 }
 
-.__spotlight-result-item-favicon {
+#__spotlight-tab .__spotlight-result-item-favicon {
   width: 20px;
   height: 20px;
   height: auto;
@@ -72,7 +72,7 @@
   pointer-events: none;
 }
 
-.__spotlight-result-item-favicon-placeholder {
+#__spotlight-tab .__spotlight-result-item-favicon-placeholder {
   width: 20px;
   height: 20px;
   margin-right: 8px;

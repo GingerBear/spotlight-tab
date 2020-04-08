@@ -12,10 +12,10 @@ let state = {
 function main() {
   window.addEventListener('keydown', e => {
     let isMac = navigator.platform.indexOf('Mac') > -1;
-    let isCmdKeyPress = (isMac && e.metaKey) || (!isMac && e.ctrlKey);
+    let isCmdKeyPress = (isMac && e.metaKey) || (!isMac && e.altKey);
 
     if (isCmdKeyPress && e.key === '\\') {
-      if (!document.querySelector('.__spotlight-tab')) {
+      if (!document.querySelector('#__spotlight-tab')) {
         initSpotlight();
       } else {
         if (state.visible) {
@@ -28,7 +28,7 @@ function main() {
   });
 
   window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && state.el) {
       hideSpotlight();
     }
   });
@@ -112,7 +112,6 @@ function initSpotlight() {
   state.el = el;
 
   getAllTabs(tabs => {
-    console.log('tabs', tabs);
     state.tabs = tabs;
     state.results = tabs;
     showSearchResult(tabs);
@@ -183,7 +182,7 @@ function focusOnTab(tabId, windowId) {
 
 function createSpotlightContainer() {
   let el = document.createElement('div');
-  el.className = '__spotlight-tab';
+  el.id = '__spotlight-tab';
   document.body.appendChild(el);
 
   return el;
