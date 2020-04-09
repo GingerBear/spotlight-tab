@@ -6,13 +6,13 @@ let state = {
   cursor: 0,
   keyword: '',
   tabs: [],
-  results: []
+  results: [],
 };
 
 function main() {
-  window.addEventListener('keydown', e => {
+  window.addEventListener('keydown', (e) => {
     let isMac = navigator.platform.indexOf('Mac') > -1;
-    let isCmdKeyPressed = (isMac && e.metaKey) || (!isMac && e.altKey);
+    let isCmdKeyPressed = (isMac && e.metaKey) || (!isMac && e.ctrlKey);
     let isShiftKeyPressed = e.shiftKey;
 
     let showSpotlightPressed =
@@ -36,12 +36,12 @@ function main() {
     // quick switch
     else if (quickSwitchPressed) {
       chrome.runtime.sendMessage({
-        action: 'goto-last-tab'
+        action: 'goto-last-tab',
       });
     }
   });
 
-  window.addEventListener('keydown', e => {
+  window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && state.el) {
       hideSpotlight();
     }
@@ -49,9 +49,9 @@ function main() {
 }
 
 function getAllTabs(cb) {
-  chrome.runtime.sendMessage({ action: 'prepare-tabs' }, function() {
+  chrome.runtime.sendMessage({ action: 'prepare-tabs' }, function () {
     setTimeout(() => {
-      chrome.runtime.sendMessage({ action: 'get-tabs' }, function(response) {
+      chrome.runtime.sendMessage({ action: 'get-tabs' }, function (response) {
         cb(response);
       });
     }, 10);
@@ -61,7 +61,7 @@ function getAllTabs(cb) {
 function search(keywork, tabs) {
   let result = [];
 
-  tabs.forEach(tab => {
+  tabs.forEach((tab) => {
     if (tab.title.toLowerCase().includes(keywork.toLowerCase())) {
       result.push(tab);
     }
@@ -78,7 +78,7 @@ function initSpotlight() {
     <div class="__spotlight-result-list"></div>
   </div>`;
   el.querySelector('.__spotlight-tab-input').focus();
-  el.querySelector('.__spotlight-tab-input').addEventListener('input', e => {
+  el.querySelector('.__spotlight-tab-input').addEventListener('input', (e) => {
     state.cursor = 0;
     state.keyword = e.target.value;
     state.results = e.target.value
@@ -88,44 +88,50 @@ function initSpotlight() {
     showSearchResult(state.results);
   });
 
-  el.querySelector('.__spotlight-tab-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      let tab = state.results[state.cursor];
-      if (!tab) return;
+  el.querySelector('.__spotlight-tab-input').addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key === 'Enter') {
+        let tab = state.results[state.cursor];
+        if (!tab) return;
 
-      hideSpotlight();
-      focusOnTab(tab.id, tab.windowId);
-    }
-
-    if (e.key === 'ArrowUp') {
-      state.cursor--;
-      if (state.cursor < 0) {
-        state.cursor = 0;
+        hideSpotlight();
+        focusOnTab(tab.id, tab.windowId);
       }
-      highLightResultItem(state.cursor);
-    }
 
-    if (e.key === 'ArrowDown') {
-      state.cursor++;
-      if (state.cursor > state.results.length - 1) {
-        state.cursor = state.results.length - 1;
+      if (e.key === 'ArrowUp') {
+        state.cursor--;
+        if (state.cursor < 0) {
+          state.cursor = 0;
+        }
+        highLightResultItem(state.cursor);
       }
-      highLightResultItem(state.cursor);
-    }
-  });
 
-  el.querySelector('.__spotlight-result-list').addEventListener('click', e => {
-    if (e.target.dataset && e.target.dataset.tabId) {
-      hideSpotlight();
-
-      focusOnTab(+e.target.dataset.tabId, +e.target.dataset.windowId);
+      if (e.key === 'ArrowDown') {
+        state.cursor++;
+        if (state.cursor > state.results.length - 1) {
+          state.cursor = state.results.length - 1;
+        }
+        highLightResultItem(state.cursor);
+      }
     }
-  });
+  );
+
+  el.querySelector('.__spotlight-result-list').addEventListener(
+    'click',
+    (e) => {
+      if (e.target.dataset && e.target.dataset.tabId) {
+        hideSpotlight();
+
+        focusOnTab(+e.target.dataset.tabId, +e.target.dataset.windowId);
+      }
+    }
+  );
 
   state.visible = true;
   state.el = el;
 
-  getAllTabs(tabs => {
+  getAllTabs((tabs) => {
     state.tabs = tabs;
     state.results = tabs;
     showSearchResult(tabs);
@@ -138,7 +144,7 @@ function unhideSpotlight() {
   state.el.querySelector('.__spotlight-tab-input').focus();
   state.el.querySelector('.__spotlight-tab-input').select();
 
-  getAllTabs(tabs => {
+  getAllTabs((tabs) => {
     state.tabs = tabs;
     state.results = state.keyword
       ? search(state.keyword, state.tabs)
@@ -190,7 +196,7 @@ function focusOnTab(tabId, windowId) {
   chrome.runtime.sendMessage({
     action: 'goto-tab',
     tabId,
-    windowId
+    windowId,
   });
 }
 

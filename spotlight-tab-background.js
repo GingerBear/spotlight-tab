@@ -2,10 +2,10 @@ let __tabs = [];
 let __currentTab = { tabId: null, windowId: null };
 let __lastTab = { tabId: null, windowId: null };
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action == 'prepare-tabs') {
     sendResponse('OK');
-    chrome.tabs.query({}, tabs => {
+    chrome.tabs.query({}, (tabs) => {
       __tabs = tabs;
     });
   }
@@ -15,8 +15,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 
   if (request.action == 'goto-tab') {
-    chrome.windows.update(request.windowId, { focused: true }, tab => {
-      chrome.tabs.update(request.tabId, { active: true }, tab => {
+    chrome.windows.update(request.windowId, { focused: true }, (tab) => {
+      chrome.tabs.update(request.tabId, { active: true }, (tab) => {
         sendResponse('OK');
       });
     });
@@ -24,8 +24,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   if (request.action == 'goto-last-tab') {
     if (__lastTab.tabId !== null) {
-      chrome.windows.update(__lastTab.windowId, { focused: true }, tab => {
-        chrome.tabs.update(__lastTab.tabId, { active: true }, tab => {
+      chrome.windows.update(__lastTab.windowId, { focused: true }, (tab) => {
+        chrome.tabs.update(__lastTab.tabId, { active: true }, (tab) => {
           sendResponse('OK');
         });
       });
@@ -33,9 +33,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-chrome.tabs.onActivated.addListener(function(activeInfo) {
+chrome.tabs.onActivated.addListener(function (activeInfo) {
   // skip if window is changed, because onFocusChanged handles it
-  if (activeInfo.windowId !== __currentTab.windowId) {
+  if (
+    activeInfo.windowId !== __currentTab.windowId ||
+    activeInfo.tabId === __currentTab.tabId
+  ) {
     return;
   }
 
@@ -46,15 +49,20 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   __currentTab.windowId = activeInfo.windowId;
 });
 
-chrome.windows.onFocusChanged.addListener(function(windowId) {
+chrome.windows.onFocusChanged.addListener(function (windowId) {
   if (windowId === -1) return;
 
-  chrome.tabs.query({ windowId: windowId }, tabs => {
+  chrome.tabs.query({ windowId: windowId }, (tabs) => {
+    let nextTabId = tabs.find((tab) => tab.active).id;
+
+    if (nextTabId === __currentTab.tabId) {
+      return;
+    }
+
     __lastTab.tabId = __currentTab.tabId;
     __lastTab.windowId = __currentTab.windowId;
 
     __currentTab.windowId = windowId;
-
-    __currentTab.tabId = tabs.find(tab => tab.active).id;
+    __currentTab.tabId = nextTabId;
   });
 });
